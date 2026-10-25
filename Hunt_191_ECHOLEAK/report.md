@@ -4,7 +4,7 @@
 
 **Hunter:** Virginia Gina Nelai  |  **Platform:** Microsoft Sentinel and Defender advanced hunting (KQL)  |  **Workspace:** LAW-HuntPractice  |  **Run:** el--17-20260920  |  **Times:** UTC (the portal shows EDT)
 **Result:** 1600/1600 points, 17/17 flags, finished on time.
-This is a cyber range exercise with simulated data. Nothing here is a real company or a real person.
+This hunt was done in a cyber range.
 
 ## What happened
 
