@@ -28,18 +28,18 @@ AML.T0051.001 is the MITRE ATLAS ID for indirect prompt injection. The other IDs
 
 ## How I proved it was malicious
 
-Volume alone does not prove it. Emily is a heavy file user on a normal day (24 file opens, 22 different files). So I compared pace, files she had never opened, tool calls and outside links.
+Volume alone does not prove it. Emily is a heavy file user on a normal day (24 file opens, 22 different files in the two hours I compared, 09:00 to 11:00 UTC). So I compared pace, files she had never opened, tool calls and outside links.
 
-- **Tool calls.** Only her 10:42 session used file tools. The other 34 sessions from 14 users were prompt and response only.
+- **Tool calls.** Only her 10:42 session used file tools. In those same two hours, the other 34 sessions from 14 users were prompt and response only.
 - **Timing.** Reads came every 2 seconds. A person does not do that.
 - **Never opened before.** She had access to files she had never touched. The HR and Executive files were new to her history.
-- **Outside links.** The other sessions had 7 image links, all to the company's own SharePoint chart renderer. Hers went to analyticshub.io.
+- **Outside links.** The other sessions in that window had 7 image links, all to the company's own SharePoint chart renderer. Hers went to analyticshub.io.
 - **No new prompt.** The 10:45 wave happened with nobody typing. Her only other prompt, at 10:56:47 ("What are the key risks mentioned in this document"), was in a separate normal session with no links.
 
 ## What I ruled out
 
 - **Stolen account.** Emily had 2 sign-ins, both from the same London IP (203.0.113.45), MFA completed, and nothing after 10:42.
-- **Copilot broken for everyone.** The other 34 sessions behaved normally on the same Copilot.
+- **Copilot broken for everyone.** The other 34 sessions in that window behaved normally on the same Copilot.
 - **Changed Copilot settings.** I saw the config being read, but I did not see it being changed. I did not check for config-change events, so I can't fully rule it out.
 
 ## What I could not see
