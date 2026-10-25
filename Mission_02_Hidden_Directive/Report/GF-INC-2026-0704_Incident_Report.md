@@ -4,7 +4,7 @@
 **Classification:** Confidential
 **Report Status:** Final
 **Report Version:** 1.0
-**Analyst:** Virginia "Gina" Nelai
+**Analyst:** Virginia Gina Nelai
 **Date of Report (UTC):** 2026-07-26
 
 ---
@@ -43,7 +43,7 @@
 | Accounts affected / compromised | `sancadmin`, `t.harris`, `d.williams`, `svc_backup` (High confidence, see 7); `m.smith`, `p.singh` (unresolved); `GF-WS01$`/`GF-SRV01$`/`GF-DC01$` machine accounts (Medium, expected SYSTEM-level activity) |
 | Domain / environment | Greenfield Logistics (training estate) |
 | Current status | Investigation substantially complete for the three in-scope hosts. Two gaps remain open: data collection/exfiltration unresolved (5.10) and GF-DC01 has not had the full persistence sweep GF-WS01 received (5.3/7). Remediation actions below (Section 10) not yet executed, this is a training exercise; treat as the action plan a real response would follow. |
-| Report prepared by | Virginia "Gina" Nelai, Analyst |
+| Report prepared by | Virginia Gina Nelai, Analyst |
 
 ---
 

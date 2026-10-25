@@ -4,7 +4,7 @@
 **Date:** 2026-07-26
 **Tools:** Microsoft Sentinel (KQL), Microsoft Defender for Endpoint (MDE), static artifact analysis
 **Track:** A, Cyber Hunt / SOC
-**Analyst:** Virginia "Gina" Nelai
+**Analyst:** Virginia Gina Nelai
 
 Greenfield Logistics asked me to reconstruct a full intrusion across three hosts: a workstation, a member server, and the domain controller. The attacker's way in wasn't a phishing email or a stolen password. It was an AI tool doing exactly what it was built to do. This is that investigation, the evidence behind it, and what I'd fix.
 

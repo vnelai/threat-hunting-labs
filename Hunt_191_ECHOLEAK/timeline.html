@@ -1,0 +1,46 @@
+<!doctype html><html><head><meta charset="utf-8">
+<!-- ATTACK TIMELINE TEMPLATE (G's graphics standard, 2026-10-16). Edit ONLY the CONFIG block, then render to PNG (see governance/Graphics_Standard.md). Every value must come from G's real logs/screenshots. -->
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1600px;height:760px;background:#0d1522;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:#e6edf6;position:relative;overflow:hidden}
+.glow{position:absolute;inset:0;background:radial-gradient(900px 400px at 15% 0%,rgba(56,189,248,.14),transparent 70%),radial-gradient(800px 400px at 100% 100%,rgba(244,114,182,.10),transparent 70%)}
+.wrap{position:relative;padding:54px 72px}
+.eyebrow{font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:#38bdf8;font-weight:600}
+h1{font-size:46px;margin-top:10px;font-weight:700;letter-spacing:-.01em}
+.sub{margin-top:10px;font-size:19px;color:#93a4bc}
+.line{position:absolute;left:72px;right:72px;top:455px;height:3px;background:linear-gradient(90deg,#38bdf8,#a78bfa 55%,#f472b6)}
+.ev{position:absolute;width:158px;text-align:center}
+.dot{position:absolute;left:50%;top:-8px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#0d1522;border:4px solid var(--c)}
+.t{font-size:22px;font-weight:700;color:var(--c);letter-spacing:.02em}
+.cat{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:#93a4bc;margin-top:3px}
+.d{font-size:16.5px;line-height:1.3;margin-top:8px;color:#e6edf6}
+.stem{position:absolute;left:50%;width:2px;background:var(--c);opacity:.55}
+.foot{position:absolute;left:72px;bottom:34px;font-size:15px;color:#6f819b}
+</style></head><body><div class="glow"></div><div class="wrap">
+<div class="eyebrow" id="eyebrow"></div><h1 id="title"></h1><div class="sub" id="sub"></div></div>
+<div class="line"></div><div id="ev"></div><div class="foot" id="foot"></div>
+<script>
+/* ===== CONFIG: edit this block only ===== */
+const CONFIG={
+ eyebrow:"Threat hunt · Microsoft Sentinel",
+ title:"Operation ECHOLEAK: how the leak unfolded",
+ sub:"One Copilot session, first-seen times in UTC, cyber range (simulated)",
+ foot:"Real times from CopilotAudit_CL and OfficeActivity_CL in my Sentinel workspace. 7 key events shown.",
+ events:[
+  ["09:15:22","Delivery","External email with a quarterly report attached","#38bdf8"],
+  ["10:42:35","Execution","Emily opens it and asks Copilot to summarise","#60a5fa"],
+  ["10:42:47","Collection","Copilot searches and reads files in 4 sites","#818cf8"],
+  ["10:43:08","Exfiltration","Reply carries 4 image links to an outside domain","#a78bfa"],
+  ["10:45:30","Collection","Second wave, no new prompt: 8 more file reads","#c084fc"],
+  ["10:46:35","Exfiltration","Reply carries 8 more outside image links","#f472b6"],
+  ["10:46:35","Impact","13 files read, 13 links, file names leaked","#fb923c"]]
+};
+/* ===== end CONFIG ===== */
+eyebrow.textContent=CONFIG.eyebrow;title.textContent=CONFIG.title;sub.textContent=CONFIG.sub;foot.textContent=CONFIG.foot;
+const E=CONFIG.events,n=E.length,L=72,R=1600-72,step=(R-L-158)/(n-1);
+E.forEach((e,i)=>{const x=L+i*step,up=i%2==0;
+const div=document.createElement('div');div.className='ev';div.style.cssText=`--c:${e[3]};left:${x}px;top:${up?265:477}px`;
+div.innerHTML=(up?`<div class="stem" style="top:170px;height:33px"></div>`:`<div class="stem" style="top:-22px;height:22px"></div>`)+`<div class="t">${e[0]}</div><div class="cat">${e[1]}</div><div class="d">${e[2]}</div>`;
+ev.appendChild(div);
+const dot=document.createElement('div');dot.className='ev';dot.style.cssText=`--c:${e[3]};left:${x}px;top:455px;height:0`;dot.innerHTML='<div class="dot"></div>';ev.appendChild(dot)});
+</script></body></html>

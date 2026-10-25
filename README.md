@@ -2,7 +2,7 @@
 
 Hands-on threat hunting work in Microsoft Sentinel and Microsoft Defender for Endpoint (MDE), correlating authentication, process, and file telemetry to investigate suspicious activity and determine root cause. Each mission is a self-contained lab with its own report, screenshots, and raw query exports.
 
-_Defensive security work by Virginia Nelai, performed on the LOG(N) Pacific Cyber Range._
+_Defensive security work by Virginia Gina Nelai, performed on the LOG(N) Pacific Cyber Range._
 
 ---
 
@@ -23,11 +23,16 @@ Sequel investigation at Nimbus Health, this one starting outside the SIEM entire
 
 ![Attack flow of Another Day Part Two: LinkedIn profile, breach lookup, cached support page, login, HR files, exit](images/hunt-03-linkedin-osint-flow.png)
 
+**Hunt 191: Operation ECHOLEAK, AI Assistant Data Leak** ([report](Hunt_191_ECHOLEAK/report.md) · [summary](Hunt_191_ECHOLEAK/Executive_Summary.md))
+Investigated how a Copilot assistant leaked company information at a simulated company. An employee opened an outside email attachment and asked Copilot to summarise it. Hidden instructions in the document made Copilot search and read 13 files across Finance, Executive, HR and IT, then put 13 image links to an outside domain in its replies, so the file names left in ordinary web requests. Proved it was an attack by comparing against 34 normal sessions (tool use, pace, files never opened, outside links), ruled out a stolen account, and stated what the logs could not prove. Mapped to MITRE ATLAS and ATT&CK, with proposed detections and fixes.
+
+![Timeline of the ECHOLEAK hunt, from the outside email to the last leaked link](images/hunt-191-echoleak-timeline.png)
+
 ---
 
 ## Skills Demonstrated
 
-Microsoft Sentinel and Microsoft Defender for Endpoint (MDE) investigation, KQL query authoring, cross-table evidence correlation, workspace/time/host scoping, Living-Off-The-Land (LOLBin) technique identification, lateral movement tracing, data collection analysis, MITRE ATT&CK mapping, root cause assessment, static malware/artifact analysis, AI prompt-injection attack analysis, OSINT-driven reconnaissance reconstruction, containment-scope and breach-disclosure reasoning.
+Microsoft Sentinel and Microsoft Defender for Endpoint (MDE) investigation, KQL query authoring, cross-table evidence correlation, workspace/time/host scoping, Living-Off-The-Land (LOLBin) technique identification, lateral movement tracing, data collection analysis, MITRE ATT&CK mapping, root cause assessment, static malware/artifact analysis, AI prompt-injection attack analysis, AI assistant data-leak investigation, OSINT-driven reconnaissance reconstruction, containment-scope and breach-disclosure reasoning.
 
 ## About
 Part of my cybersecurity portfolio. More: [github.com/vnelai](https://github.com/vnelai)

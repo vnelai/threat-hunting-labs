@@ -4,7 +4,7 @@
 **Date:** 2026-08-17
 **Tools:** Microsoft Sentinel (KQL), Microsoft Defender for Endpoint (MDE), OSINT artifact analysis
 **Track:** A, Cyber Hunt / SOC
-**Analyst:** Virginia "Gina" Nelai
+**Analyst:** Virginia Gina Nelai
 **Platform:** LOG(N) Pacific Cyber Range
 **Difficulty:** Beginner (harder edge than part one)
 **Scope:** `nh-wks-it-01` — single host
