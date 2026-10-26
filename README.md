@@ -28,11 +28,16 @@ Investigated how a Copilot assistant leaked company information in a cyber range
 
 ![Timeline of the ECHOLEAK hunt, from the outside email to the last leaked link](images/hunt-191-echoleak-timeline.png)
 
+**Hunt 193: Operation QUARTZFANG, AI-Directed Web Server Intrusion** ([report](Hunt_193_QUARTZFANG/report.md) · [summary](Hunt_193_QUARTZFANG/Executive_Summary.md))
+Investigated an attack on a web portal in a cyber range hunt, across four hosts and nine tables. A document preview feature was abused to reach a local Redis service, which led to a root reverse shell started by cron. From there the attacker read a config file, dumped database tables, browsed a container registry, tested an admin API, then packed, encrypted and uploaded data and added a new admin account. An AI agent did most of the work with a person approving at four points. I checked the agent's own log against the telemetry and showed two of its claims were false (stolen secrets that the admin API refused, and credentials it never actually read). Told three lookalikes apart from the attack (same account, same tool, same connection pattern), and stated what the logs could not show. Mapped to MITRE ATT&CK, with proposed detections and fixes.
+
+![Timeline of the QUARTZFANG hunt, from the outside scan to the new admin account](images/hunt-193-quartzfang-timeline.png)
+
 ---
 
 ## Skills Demonstrated
 
-Microsoft Sentinel and Microsoft Defender for Endpoint (MDE) investigation, KQL query authoring, cross-table evidence correlation, workspace/time/host scoping, Living-Off-The-Land (LOLBin) technique identification, lateral movement tracing, data collection analysis, MITRE ATT&CK mapping, root cause assessment, static malware/artifact analysis, AI prompt-injection attack analysis, AI assistant data-leak investigation, OSINT-driven reconnaissance reconstruction, containment-scope and breach-disclosure reasoning.
+Microsoft Sentinel and Microsoft Defender for Endpoint (MDE) investigation, KQL query authoring, cross-table evidence correlation, workspace/time/host scoping, Living-Off-The-Land (LOLBin) technique identification, lateral movement tracing, data collection analysis, MITRE ATT&CK mapping, root cause assessment, static malware/artifact analysis, AI prompt-injection attack analysis, AI assistant data-leak investigation, SSRF-to-reverse-shell intrusion tracing, checking an attacker AI agent log against telemetry, lookalike triage (real versus noise), OSINT-driven reconnaissance reconstruction, containment-scope and breach-disclosure reasoning.
 
 ## About
 Part of my cybersecurity portfolio. More: [github.com/vnelai](https://github.com/vnelai)
