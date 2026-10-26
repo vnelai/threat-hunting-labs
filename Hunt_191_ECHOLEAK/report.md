@@ -10,7 +10,7 @@ This hunt was done in a cyber range.
 
 An employee, Emily, got an email from outside the company with a quarterly report attached. She opened it and asked Microsoft Copilot to summarise it. The document had hidden instructions in it. Copilot followed them: it searched and read 13 files across the Finance, Executive, HR and IT sites, and then put 13 image links in its replies that pointed to an outside domain. Copilot and the browser load images on their own, so each link sent a web request out with the file names packed into it. No one clicked anything after the first prompt.
 
-What went out was file names and labels, not file contents. I decoded all 13 links to check. One label was system_prompt_cormorant_capital, which means Copilot's setup text was read and its name was sent out.
+What went out was file names and labels, not file contents. I decoded all 13 links to check. One label was system_prompt_cormorant_capital, which means Copilot's setup text was read and its name was sent out. Copilot also printed that setup text in one of its replies (the system prompt, the labels in use and its access scope). The logs show only the label going out in a link, so I can say the text was shown, not that it left the company.
 
 ## Attack chain
 
