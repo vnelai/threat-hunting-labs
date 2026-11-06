@@ -4,5 +4,5 @@ An AI assistant (Copilot) leaked file names in a cyber range hunt after an emplo
 
 - [Full hunt report](report.md) with the timeline graphic at the top
 - [One-page summary](Executive_Summary.md), short and simple
-- [Timeline graphic (PNG)](timeline.png) and the [editable version (HTML)](timeline.html)
+- [Timeline graphic (PNG)](timeline.png)
 - [Screenshots](screenshots/) of the evidence
