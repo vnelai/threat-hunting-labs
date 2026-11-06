@@ -19,7 +19,7 @@
 
 **Grabbing more power.** The attacker needed to run code as the most powerful account on the machine, and found two separate ways to get there, on two different hosts. On GF-WS01, `sancadmin`, who already had admin rights, planted the `MicrosoftHealthUpdate` task and hijacked the `GFUpdaterSvc` service, both of which then ran as the system's top-level account (SYSTEM) automatically. On GF-SRV01, `t.harris` found the server's SQL database still had a known dangerous setting available to turn on (`xp_cmdshell`), and used it to run their own commands straight through the database engine. Neither move used any exploit, both just relied on things being configured more openly than they should have been.
 
-**Stealing the keys.** From there they went after credentials, and found them sitting around in more than one place. On GF-WS01, `sancadmin` found a service account's password (`svc_backup`) left readable in a plain internal notes field, Active Directory's Description field, no password should ever be there, and it was found and used within half an hour. `sancadmin` also used a trick where a normal Windows program (Explorer) briefly touched the memory of the process that holds every logged-in user's credentials (`lsass.exe`), and then Windows' own crash-reporting tool (WerFault), running with full system rights, touched that same memory again a second later. That's a way to get a trusted part of Windows to do the actual credential theft on the attacker's behalf. On GF-SRV01, `t.harris` went further: they changed `svc_backup`'s password outright, and a second employee's actual password (`d.williams`, `ITAdmin2025!`) showed up typed directly into one of their commands, in plain, readable text, and got used right there. How they got hold of that password in the first place isn't confirmed, only that they had it and used it.
+**Stealing the keys.** From there they went after credentials, and found them sitting around in more than one place. On GF-WS01, `sancadmin` found a service account's password (`svc_backup`) left readable in a plain internal notes field, Active Directory's Description field, no password should ever be there, and it was found and used within half an hour. `sancadmin` also used a trick where a normal Windows program (Explorer) briefly touched the memory of the process that holds every logged-in user's credentials (`lsass.exe`), and then Windows' own crash-reporting tool (WerFault), running with full system rights, touched that same memory again a second later. That's a way to get a trusted part of Windows to do the actual credential theft on the attacker's behalf. On GF-SRV01, `t.harris` went further: they changed `svc_backup`'s password outright, and a second employee's actual password (`d.williams`, `[redacted]`) showed up typed directly into one of their commands, in plain, readable text, and got used right there. How they got hold of that password in the first place isn't confirmed, only that they had it and used it.
 
 **Reaching the domain controller.** With stolen credentials in hand, the attacker moved from GF-WS01 to GF-SRV01, and then from GF-SRV01 to GF-DC01, the domain controller, which holds every account and password for the entire company. Second by second, the logs show the compromised account `d.williams` logging into GF-DC01, immediately accessing an administrative file share, and then triggering Windows' own service-installer to plant and run a malicious program (found on disk as `psexec_service.exe`), all inside an eight-second window. The log event that records the service being installed names the account that did it directly, so this is confirmed from the log itself.
 
@@ -418,7 +418,7 @@ attempts across the full incident window**, a clean negative finding for the dom
 **GF-SRV01, `t.harris`, confirmed: `svc_backup`'s password changed by the attacker.**
 
 ```
-12:59:17 UTC | net user svc_backup NewPass2026 /domain
+12:59:17 UTC | net user svc_backup [redacted] /domain
 ```
 
 This is very likely the actual reason `svc_backup` authentication attempts start failing later in the
@@ -429,13 +429,13 @@ sourced from command line.
 **GF-SRV01, `t.harris`, confirmed: `d.williams`'s password found in plaintext, used directly.**
 
 ```
-13:10:55 UTC | net use Z: \\127.0.0.1\C$ /user:GREENFIELD\d.williams ITAdmin2025!
+13:10:55 UTC | net use Z: \\127.0.0.1\C$ /user:GREENFIELD\d.williams [redacted]
 13:10:56 UTC | net use Z: /delete
 ```
 
 This resolves the open question from earlier in this section: `d.williams` is a compromised account, not
 merely an account with an unusual multi-IP usage pattern. The attacker had and used the actual plaintext
-password (`ITAdmin2025!`) to mount the local admin share (`C$`) via loopback, then removed the mapping
+password (`[redacted]`) to mount the local admin share (`C$`) via loopback, then removed the mapping
 immediately after. Where this password was obtained (LSASS dump, Description field, or elsewhere) is not
 yet determined. MITRE T1078 (Valid Accounts), confidence High.
 
@@ -443,7 +443,7 @@ yet determined. MITRE T1078 (Valid Accounts), confidence High.
 
 ```
 12:57:48 UTC | AnyDesk.exe --get-id
-12:57:48 UTC | AnyDesk.exe --set-password Greenfield2026!
+12:57:48 UTC | AnyDesk.exe --set-password [redacted]
 ```
 
 Not just AnyDesk being used (already documented as T1219 under Command and Control), this specifically
@@ -570,7 +570,7 @@ the `xp_cmdshell` abuse documented in 5.3/5.4. MITRE T1210-adjacent (application
 via a database service).
 
 **GF-SRV01, `t.harris`, confirmed: admin share mounted using `d.williams`'s credentials.** See 5.6 for the
-full finding (`net use Z: \\127.0.0.1\C$ /user:GREENFIELD\d.williams ITAdmin2025!`). MITRE T1021.002
+full finding (`net use Z: \\127.0.0.1\C$ /user:GREENFIELD\d.williams [redacted]`). MITRE T1021.002
 (Remote Services: SMB/Windows Admin Shares) combined with T1078 (Valid Accounts).
 
 ### 5.9 Command and Control
@@ -594,7 +594,7 @@ carry no MITRE `AttackTechniques` value in the source data, so no technique ID i
 pending that mapping.
 
 **Channel 2, human-operated, AnyDesk (T1219, High confidence).** On GF-SRV01, `t.harris` runs
-`AnyDesk.exe --get-id` and `AnyDesk.exe --set-password Greenfield2026!` at 12:57:48 UTC, configuring AnyDesk
+`AnyDesk.exe --get-id` and `AnyDesk.exe --set-password [redacted]` at 12:57:48 UTC, configuring AnyDesk
 for unattended, persistent remote access, not just one login. Confirmed subsequent AnyDesk sessions from
 GF-SRV01$ at 10:46:41, 13:06:46, and 14:21:41 UTC. This is a standalone, human-operated channel distinct
 from the AdaptixC2 malware channel, it's how an operator got hands-on-keyboard access rather than automated
@@ -657,13 +657,13 @@ evidence.
 - `t.harris` (GF-SRV01, `GREENFIELD` domain), High. Ran the full recon → escalation → credential-theft →
   AnyDesk-backdoor sequence on GF-SRV01 (5.4/5.6/5.9), changed `svc_backup`'s password and used
   `d.williams`'s plaintext password directly (5.6).
-- `d.williams`, High. Plaintext password (`ITAdmin2025!`) recovered from an attacker command line (5.6);
+- `d.williams`, High. Plaintext password (`[redacted]`) recovered from an attacker command line (5.6);
   independently confirmed as the account that installed and ran `hOQjiirI.exe` on GF-DC01 via a direct
   account-attributed event (4697, 5.8). Also the account behind the recurring GF-BKP01/GF-WEB01
   connectivity checks (5.8), which read as automated/scripted rather than manual attacker action once the
   cadence was examined, but the account itself is still compromised regardless of that specific activity's
   origin.
-- `svc_backup`, High. Password changed by the attacker (`NewPass2026`, 5.6); logged onto both GF-SRV01
+- `svc_backup`, High. Password changed by the attacker (`[redacted]`, 5.6); logged onto both GF-SRV01
   and GF-DC01 during the incident window (Section 4 timeline).
 - `GF-WS01$`, `GF-SRV01$`, `GF-DC01$` (machine accounts), Medium. Several persistence mechanisms and
   scheduled/system-level actions run under these accounts, expected for SYSTEM-level attacker code on a
@@ -681,7 +681,7 @@ account that created it and will survive a password change on that account alone
   `GFUpdaterSvc` service binary (5.3). Four separate, independent persistence mechanisms on one host.
 - GF-SRV01: `WindowsUpdate` one-shot SYSTEM task (5.3, already fired, unlikely to re-trigger on its own,
   but the dropped binary `C:\Windows\Temp\srv.exe` is unrecovered and unverified), and AnyDesk configured
-  with a fixed unattended-access password (`Greenfield2026!`, 5.6/5.9), this survives every credential
+  with a fixed unattended-access password (`[redacted]`, 5.6/5.9), this survives every credential
   reset in the domain since it does not use Windows authentication at all.
 - GF-DC01: no scheduled task, Run key, or service persistence confirmed (5.3), this is a real gap in
   coverage, not evidence of absence, GF-DC01 has not had the same 4698 sweep run against it that GF-WS01
@@ -726,9 +726,9 @@ that input.
 | Discovery | T1087.002 | Account Discovery: Domain Account | `Get-ADUser svc_backup -Properties Description,ServicePrincipalNames`, same event as above, also gathers SPN info (Kerberoasting-adjacent recon). See 5.6. |
 | Credential Access | T1555.004 | Credentials from Password Stores: Windows Credential Manager | GF-WS01, `sancadmin`, `cmdkey /list` at 11:25:03 and 11:57:54 UTC, checking for saved credentials. See 5.6. |
 | Credential Access | T1003.001 | OS Credential Dumping: LSASS Memory | GF-WS01, 12:26:32 UTC, `sancadmin` via `Explorer.EXE` opens a handle on `lsass.exe` with access `0x1010` (minimal, quiet read pattern). Explorer has no legitimate reason to touch LSASS. Likely source of credential material for the later Impacket-based lateral movement. See 5.6. |
-| Credential Access | T1098 | Account Manipulation | GF-SRV01, `t.harris`, 12:59:17 UTC: `net user svc_backup NewPass2026 /domain`, attacker-initiated password change, likely explanation for later svc_backup auth failures. See 5.6. |
-| Credential Access | T1078 | Valid Accounts | GF-SRV01, `t.harris`, 13:10:55 UTC: `net use Z: \\127.0.0.1\C$ /user:GREENFIELD\d.williams ITAdmin2025!`, plaintext password for a second compromised account used directly. See 5.6. |
-| Persistence | T1219 | Remote Access Software | GF-SRV01, `t.harris`, 12:57:48 UTC: AnyDesk configured with `--set-password Greenfield2026!` for unattended access, a standalone backdoor mechanism. See 5.6. |
+| Credential Access | T1098 | Account Manipulation | GF-SRV01, `t.harris`, 12:59:17 UTC: `net user svc_backup [redacted] /domain`, attacker-initiated password change, likely explanation for later svc_backup auth failures. See 5.6. |
+| Credential Access | T1078 | Valid Accounts | GF-SRV01, `t.harris`, 13:10:55 UTC: `net use Z: \\127.0.0.1\C$ /user:GREENFIELD\d.williams [redacted]`, plaintext password for a second compromised account used directly. See 5.6. |
+| Persistence | T1219 | Remote Access Software | GF-SRV01, `t.harris`, 12:57:48 UTC: AnyDesk configured with `--set-password [redacted]` for unattended access, a standalone backdoor mechanism. See 5.6. |
 | Privilege Escalation | T1012 / T1059 | Query Registry / Command and Scripting Interpreter | GF-SRV01, `t.harris`, 12:55-12:59 UTC: `AlwaysInstallElevated` misconfiguration check followed by enabling and using SQL Server's `xp_cmdshell`. Second, independent escalation path from the GF-WS01 scheduled-task/service route. See 5.3/5.4. |
 | Lateral Movement | T1210 | Exploitation of Remote Services | GF-SRV01, `t.harris`, 12:57:32 UTC: direct SQL Server instance access (`SQLCMD -S 10.1.0.169\GREENFIELD`). See 5.8. |
 | Lateral Movement | T1021.002 | Remote Services: SMB/Windows Admin Shares | GF-SRV01, `t.harris`, 13:10:55 UTC, admin share (`C$`) mounted using `d.williams`'s credentials. See 5.8. |
@@ -793,9 +793,9 @@ Three things made the intrusion worse once it started, none of them the root cau
 | File path | C:\Windows\Temp\srv.exe (GF-SRV01) | Payload of the `WindowsUpdate` one-shot scheduled task created by t.harris, 13:11:20 UTC, not yet recovered/hash-verified |
 | Scheduled task / service | `WindowsUpdate` (GF-SRV01, one-time trigger, runs as SYSTEM, 13:11:20 UTC, created by t.harris) | See 5.3 |
 | File path | C:\Users\t.harris\AppData\Local\Temp\svchost_upd.exe (GF-SRV01) | Downloaded via certutil from cdn.cloud-endpoint.net/update, 12:51:42 UTC, same staged filename as the GF-WS01 GFUpdaterSvc hijack |
-| Account | GREENFIELD\d.williams, password `ITAdmin2025!` (plaintext, recovered from attacker command line) | Used by t.harris to mount \\127.0.0.1\C$, 13:10:55 UTC, see 5.6 |
-| Account | svc_backup, password changed to `NewPass2026` by attacker | 12:59:17 UTC, GF-SRV01, see 5.6 |
-| Other | AnyDesk unattended-access password: `Greenfield2026!` | Set on GF-SRV01, 12:57:48 UTC, standalone persistence mechanism, see 5.6 |
+| Account | GREENFIELD\d.williams, password `[redacted]` (plaintext, recovered from attacker command line) | Used by t.harris to mount \\127.0.0.1\C$, 13:10:55 UTC, see 5.6 |
+| Account | svc_backup, password changed to `[redacted]` by attacker | 12:59:17 UTC, GF-SRV01, see 5.6 |
+| Other | AnyDesk unattended-access password: `[redacted]` | Set on GF-SRV01, 12:57:48 UTC, standalone persistence mechanism, see 5.6 |
 | Host (out of scope, unconfirmed) | GF-BKP01 (backup server) | Connectivity checked by d.williams from GF-DC01, 14:50:12 UTC, port 3389. Not yet pulled into investigation scope. See 5.8. |
 | Host (out of scope, unconfirmed) | GF-WEB01 (web server) | Connectivity checked by d.williams from GF-DC01, 14:50:12 UTC, port 22. Not yet pulled into investigation scope. See 5.8. |
 | Registry key | | |
@@ -810,7 +810,7 @@ Three things made the intrusion worse once it started, none of them the root cau
 | 1 | Force a password reset for `sancadmin`, `t.harris`, `d.williams`, and `svc_backup`, and review whether `sancadmin`'s standing admin rights are still justified. | All four are confirmed compromised (7). Reset alone does not remove persistence, this stops the credentials themselves from being reused. | Recommended, not yet executed |
 | 2 | Remove all four confirmed persistence mechanisms on GF-WS01: the `GFDefenderMaintenance` boot task, the `MicrosoftHealthUpdate` logon task, the `WindowsHealthService` Run key, and restore `GFUpdaterSvc`'s original service binary. | Every one of these restarts the attacker's access independent of any password. See 5.3. | Recommended, not yet executed |
 | 3 | Remove the `WindowsUpdate` scheduled task on GF-SRV01 and recover/verify `C:\Windows\Temp\srv.exe` before deleting it. | Confirmed SYSTEM-level persistence mechanism, payload never recovered or hash-verified. See 5.3/9. | Recommended, not yet executed |
-| 4 | Remove or reset the AnyDesk unattended-access password (`Greenfield2026!`) on GF-SRV01. | This backdoor does not use Windows credentials at all, a domain-wide password reset will not touch it. See 5.6/5.9. | Recommended, not yet executed |
+| 4 | Remove or reset the AnyDesk unattended-access password (`[redacted]`) on GF-SRV01. | This backdoor does not use Windows credentials at all, a domain-wide password reset will not touch it. See 5.6/5.9. | Recommended, not yet executed |
 | 5 | Run the same scheduled-task and persistence sweep on GF-DC01 that GF-WS01 already received. | GF-DC01 is the highest-value host reached and is currently the least-checked. See 5.3/8. | Recommended, not yet executed |
 | 6 | Block or sinkhole `cloud-endpoint.net` and its subdomains at DNS/firewall level. | Confirmed C2 and payload-hosting infrastructure used across every stage of the intrusion. See 5.9/9. | Recommended, not yet executed |
 | 7 | Disable `xp_cmdshell` on the GF-SRV01 SQL Server instance unless a legitimate business reason for it is confirmed. | Enabled by the attacker as an execution path, disabled by default for a reason. See 5.4. | Recommended, not yet executed |
